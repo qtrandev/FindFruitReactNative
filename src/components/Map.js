@@ -24,8 +24,6 @@ class Map extends Component {
     };
     this.itemsRef = new Firebase("https://findfruit.firebaseio.com/tree");
     this.itemsRef.on('value', (snap) => {
-      // get children as an array
-      console.log(snap);
       var trees = [];
       var markers = [];
       snap.forEach((child) => {

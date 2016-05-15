@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,16 +9,34 @@ import {
   TouchableHighlight
 } from 'react-native';
 
-import {Actions} from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
+import { updateProfile } from '../actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+
+function mapStateToProps(state) {
+  return { userName: state.profile.userName }
+}
+
+function mapDispatchToProps(dispatch) {
+  //return bindActionCreators({ updateProfile }, dispatch)
+  return {
+        changeName: () => dispatch({
+          type: 'UPDATE_PROFILE',
+          userName: 'Tom Jones'
+        })
+    }
+}
 
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: 'Quyen Tran'
+      userName: props.userName
     };
   }
   render() {
+    console.log('Profile render() called. Name: '+this.props.userName);
     return (
       <View style={styles.container}>
         <View style={styles.userView}>
@@ -27,7 +45,7 @@ class Profile extends Component {
             source={{uri: 'https://pbs.twimg.com/profile_images/692594933488848896/uDJQ6oFm.jpg'}}
           />
           <Text style={styles.userName}>
-            {this.state.userName}
+            {this.props.userName}
           </Text>
           <Image
           style={styles.userRating}
@@ -36,10 +54,10 @@ class Profile extends Component {
         </View>
         <TouchableHighlight
             style={styles.button}
-            onPress={Actions.login}
+            onPress={this.props.changeName}
             underlayColor='#bbbbbb'>
               <Text style={styles.buttonText}>
-                Login
+                Update Profile
               </Text>
         </TouchableHighlight>
         <TouchableHighlight
@@ -98,4 +116,8 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = Profile;
+Profile.propTypes = {
+  userName: PropTypes.string
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)
