@@ -2,7 +2,7 @@ const profileReducer = (state = { userName: 'Quyen Tran'}, action) => {
   switch (action.type) {
     case 'UPDATE_PROFILE':
       return {
-        userName: 'Tom Jones'  // action.userName
+        userName: action.userName
       }
     default:
       return state

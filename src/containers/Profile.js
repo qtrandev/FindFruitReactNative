@@ -6,7 +6,8 @@ import {
   Text,
   View,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  TextInput
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -23,6 +24,12 @@ function mapDispatchToProps(dispatch) {
 }
 
 class Profile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: props.userName
+    };
+  }
   render() {
     console.log('Profile render() called. Name: '+this.props.userName);
     return (
@@ -39,10 +46,16 @@ class Profile extends Component {
           style={styles.userRating}
           source={{uri: 'http://ridesharegenius.com/wp-content/uploads/2015/03/5-stars-640x162.jpg'}}
           />
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({name: text})}
+            placeholder={'Name'}
+            value={this.state.name}
+          />
         </View>
         <TouchableHighlight
             style={styles.button}
-            onPress={this.props.updateProfile}
+            onPress={() => this.props.updateProfile(this.state.name)}
             underlayColor='#bbbbbb'>
               <Text style={styles.buttonText}>
                 Update Profile
@@ -89,6 +102,15 @@ const styles = StyleSheet.create({
     width: 150,
     height: 30
   },
+  textInput: {
+    height: 40,
+    color: 'white',
+    textDecorationColor: 'white',
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: 10,
+    textAlign: 'center'
+  },
   button: {
     height: 36,
     backgroundColor: '#f7b700',
@@ -105,7 +127,8 @@ const styles = StyleSheet.create({
 });
 
 Profile.propTypes = {
-  userName: PropTypes.string
+  userName: PropTypes.string,
+  updateProfile: PropTypes.func
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)
