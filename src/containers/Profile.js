@@ -19,22 +19,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  //return bindActionCreators({ updateProfile }, dispatch)
-  return {
-        changeName: () => dispatch({
-          type: 'UPDATE_PROFILE',
-          userName: 'Tom Jones'
-        })
-    }
+  return bindActionCreators({ updateProfile }, dispatch)
 }
 
 class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userName: props.userName
-    };
-  }
   render() {
     console.log('Profile render() called. Name: '+this.props.userName);
     return (
@@ -54,7 +42,7 @@ class Profile extends Component {
         </View>
         <TouchableHighlight
             style={styles.button}
-            onPress={this.props.changeName}
+            onPress={this.props.updateProfile}
             underlayColor='#bbbbbb'>
               <Text style={styles.buttonText}>
                 Update Profile
