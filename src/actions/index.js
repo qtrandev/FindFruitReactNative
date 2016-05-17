@@ -1,7 +1,14 @@
+export const replaceTrees = (trees) => {
+  return {
+    type: 'REPLACE_TREES',
+    payload: trees
+  }
+}
+
 export const addTree = (treeType) => {
   return {
     type: 'ADD_TREE',
-    tree: {
+    payload: {
       treeType: treeType
     }
   }

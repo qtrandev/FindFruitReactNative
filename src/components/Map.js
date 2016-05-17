@@ -12,20 +12,43 @@ import {
   View
 } from 'react-native';
 
-import {Actions} from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
+import { replaceTrees } from '../actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
 const Firebase = require('firebase');
+
+function mapStateToProps(state) {
+  let markers = [];
+  state.trees.forEach((tree) => {
+    markers.push({
+      latitude: tree.lat,
+      longitude: tree.lng,
+      title: tree.treetype,
+      subtitle: 'Allow Pick: '+ tree.allowpick + ', ' +
+        'Public Location: ' + tree.publiclocation
+    });
+  });
+  return {
+    markers
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    replaceTrees
+  }, dispatch);
+}
 
 class Map extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      trees: [],
-      markers: []
-    };
+  }
+  
+  componentDidMount() {
     this.itemsRef = new Firebase("https://findfruit.firebaseio.com/tree");
-    this.itemsRef.on('value', (snap) => {
+    this.itemsRef.on('value', ((snap) => {
       var trees = [];
-      var markers = [];
       snap.forEach((child) => {
         trees.push({
           treetype: child.val().treetype,
@@ -39,21 +62,11 @@ class Map extends Component {
           lat: child.val().lat,
           lng: child.val().lng
         });
-        markers.push({
-          latitude: child.val().lat,
-          longitude: child.val().lng,
-          title: child.val().treetype,
-          subtitle: 'Allow Pick: '+ child.val().allowpick + ', ' +
-            'Public Location: ' + child.val().publiclocation
-        });
       });
-
-      this.setState({
-        trees: trees,
-        markers: markers,
-      });
-    });
+      this.props.replaceTrees(trees);
+    }).bind(this));
   }
+  
   render() {
     return (
       <View style={styles.container}>
@@ -65,7 +78,7 @@ class Map extends Component {
             latitudeDelta: 5,
             longitudeDelta: 5
           }}
-          annotations={this.state.markers}/>
+          annotations={this.props.markers}/>
           <TouchableHighlight
             style={styles.button}
             onPress={() => Actions.pop()}
@@ -101,4 +114,8 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = Map;
+Map.propTypes = {
+  markers: PropTypes.arrayOf(PropTypes.object)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map)

@@ -1,30 +1,22 @@
-const tree = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TREE':
-      return {
-        treetype: action.tree.treetype,
-        fulltype: action.tree.fulltype,
-        verified: action.tree.verified,
-        publiclocation: action.tree.publiclocation,
-        allowpick: action.tree.allowpick,
-        season: action.tree.season,
-        source: action.tree.source,
-        marker: action.tree.marker,
-        lat: action.tree.lat,
-        lng: action.tree.lng
-      }
-    default:
-      return state
-  }
-}
-
 const trees = (state = [], action) => {
   switch (action.type) {
+    case 'REPLACE_TREES':
+      return action.payload;
     case 'ADD_TREE':
-      return [
-        ...state,
-        tree(undefined, action)
-      ]
+      return Object.assign([
+        ...state, {
+          treetype: action.payload.treetype,
+          fulltype: action.payload.fulltype,
+          verified: action.payload.verified,
+          publiclocation: action.payload.publiclocation,
+          allowpick: action.payload.allowpick,
+          season: action.payload.season,
+          source: action.payload.source,
+          marker: action.payload.marker,
+          lat: action.payload.lat,
+          lng: action.payload.lng
+        }
+      ]);
     default:
       return state
   }
